@@ -1,2 +1,8 @@
 __pycache__
 *.log
+
+#virtualenv
+bin
+include
+lib
+share
