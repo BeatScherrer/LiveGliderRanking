@@ -3,28 +3,33 @@
 import numpy as np
 
 from PyProj import Proj
-from haversine import Haversine
+from shapely.geometry import Point
+
+from haversine import 
+
 
 p1 = Proj(init='epsg:26915')
 
 class Task:
-    '''
+    """
     Task class. Initalization with the task type ("AAT/Race") and a list of
-    task points and assigns the corresponding distances.
-    '''
+    task points consisting of shapely polygons.
+    """   
     def __init__(self, task_type, task_points):
         self.task_type = task_type
         self.task_points = task_points
-        self.task_distance = 0
         
         self.start_point = StartPoint(task_points[0])
         self.finnish_point = FinnishPoint(task_points[len(task_points)])
         
+	self.task_distance = 0
+	for i in range(0, len(task_points)):
+	    self.task_distance += Haversine(task_points[i], task_points[i+1]).km 
         
-        if(task_type == "Race"):
-            for i in range(0, len(task_points)-1):
-                self.task_distance += Haversine(task_points[i], task_points[i+1]).km
-                
+	    #calculate AAT Distances?        
+	    #task_min_distance = 0
+	    #task_max_distance = 0
+	    #for i in task_poi
     def __repr__(self):
         return self.task_type + " Task: " + str(round(self.task_distance, 3)) + "km"
 
@@ -48,22 +53,18 @@ class Point:
     def __repr__(self):
         return '(' + str(self.lat) + ',' + str(self.lon) + ')'
 
-# TaskPoint class. Hold the type of sector.
 class TaskPoint(Point):
     """
-    This class defines a Task point.
+    A taskpoint consists of point and the corresponding shapely polygon.
     
-    Depending on the task type given, a task point has a different structure:
-        - Race Task:
-    
-    Task points consist of:
-        - Center point
-        - Radius 1
-        - Radius 2
-        - Angle
+    The point is represented in x,y coordinates while it is constructed using
+    latitude and longitude.
     """
     def __init__(self, lat, lon, radius):
-        Point.__init__(self, lat, lon)
+        
+        x, y = p1(lat, lon)
+        Point.__init__(self, x, y)
+        
         self.radius = radius
     
     def __repr__(self):
@@ -84,7 +85,7 @@ class StartPoint(Point):
         return repr(Point.__repr__(self)) + ' Line: ' + str(self.length) + ' km'
         
 
-class FinnishPoint(Point):
+class FinishPoint(Point):
     def __init__(self, lat, lon, length=1):
         Point.__init__(self, lat, lon)
         self.length = 1

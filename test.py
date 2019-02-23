@@ -3,11 +3,11 @@ from ogn.parser import parse, ParseError
 
 import logging
 
-
+# Test function to log position of arbitrary flarm data
 def process_beacon(raw_message):
     try:
         beacon = parse(raw_message)
-        print('Received {aprs_type}: {raw_message}'.format(**beacon))
+        print(beacon.get('name'))
     except ParseError as e:
         print('Error, {}'.format(e.message))
     

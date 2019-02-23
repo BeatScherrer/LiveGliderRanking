@@ -2,6 +2,10 @@
 
 from ogn.client import AprsClient
 from ogn.parser import parse, ParseError
+from core import Competitor, Task
+
+# Set up Competitors
+competitors = []
 
 
 # create OGN client
